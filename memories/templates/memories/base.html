@@ -36,6 +36,9 @@
             },
         };
     </script>
+    <script>
+        document.documentElement.classList.add("js-enabled");
+    </script>
     <style>
         html { scroll-behavior: smooth; }
         body {
@@ -48,8 +51,19 @@
             font-family: 'Dancing Script', cursive;
             color: #FF7F9F;
         }
-        .fade-up { opacity: 0; transform: translateY(20px); transition: all 0.8s ease; }
-        .fade-up.show { opacity: 1; transform: translateY(0); }
+        .fade-up {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.8s ease;
+        }
+        .js-enabled .fade-up {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .js-enabled .fade-up.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
         .page-transition { opacity: 0; transition: opacity 0.5s ease; }
         .page-transition.ready { opacity: 1; }
         .romantic-card {

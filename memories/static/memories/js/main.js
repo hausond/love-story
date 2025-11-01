@@ -26,9 +26,33 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Ensure fade-up sections display if IntersectionObserver not supported.
-    if (!("IntersectionObserver" in window)) {
-        document.querySelectorAll(".fade-up").forEach((section) => section.classList.add("show"));
+    const fadeUpElements = document.querySelectorAll(".fade-up");
+    const revealAll = () => fadeUpElements.forEach((section) => section.classList.add("show"));
+
+    if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("show");
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            { threshold: 0.1 }
+        );
+        fadeUpElements.forEach((section) => observer.observe(section));
+
+        // Fallback: ensure sections become visible if observer never fires.
+        setTimeout(() => {
+            fadeUpElements.forEach((section) => {
+                if (!section.classList.contains("show")) {
+                    section.classList.add("show");
+                }
+            });
+        }, 1200);
+    } else {
+        revealAll();
     }
 
     // Mobile menu toggle.
