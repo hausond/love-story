@@ -34,3 +34,4 @@ pytest_cache/
 # Environment variables / secrets
 *.env
 .env.*
+!.env.example

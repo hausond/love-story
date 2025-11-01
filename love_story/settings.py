@@ -1,19 +1,29 @@
-"""
-Django settings for love_story project.
-
-Generated to power a personal memories site.
-"""
+"""Django settings for love_story project."""
 
 from pathlib import Path
+import os
+
+import dj_database_url
+from dotenv import load_dotenv
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-love-story-placeholder-key"
+# Load environment variables from .env when present (local/dev convenience).
+load_dotenv(BASE_DIR / ".env")
 
-DEBUG = True
 
-ALLOWED_HOSTS: list[str] = ["*"]
+# Core configuration
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-love-story-placeholder-key")
+
+DEBUG = os.environ.get("DJANGO_DEBUG", "0") == "1"
+
+_hosts = os.environ.get("DJANGO_ALLOWED_HOSTS", "")
+ALLOWED_HOSTS: list[str] = [host.strip() for host in _hosts.split(",") if host.strip()]
+if DEBUG and not ALLOWED_HOSTS:
+    ALLOWED_HOSTS = ["*"]
+elif not ALLOWED_HOSTS:
+    ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 
 # Application definition
@@ -24,6 +34,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "whitenoise.runserver_nostatic",
     "django.contrib.staticfiles",
     "dashboard",
     "memories",
@@ -31,6 +42,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -64,10 +76,10 @@ WSGI_APPLICATION = "love_story.wsgi.application"
 # https://docs.djangoproject.com/en/stable/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    "default": dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+    )
 }
 
 
@@ -108,6 +120,7 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS: list[Path] = []
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -118,3 +131,14 @@ LOGOUT_REDIRECT_URL = "dashboard:login"
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# Ensure correct scheme/host when behind a proxy (Render).
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
+    if origin.strip()
+]
