@@ -13,7 +13,7 @@ SECRET_KEY = "django-insecure-love-story-placeholder-key"
 
 DEBUG = True
 
-ALLOWED_HOSTS: list[str] = []
+ALLOWED_HOSTS: list[str] = ["*"]
 
 
 # Application definition
