@@ -7,10 +7,7 @@ services:
     name: love-story
     env: python
     plan: free
-    buildCommand: |
-      pip install -r requirements.txt
-      python manage.py migrate --noinput
-      python manage.py collectstatic --noinput
+    buildCommand: pip install -r requirements.txt && python manage.py migrate --noinput && python manage.py collectstatic --noinput
     startCommand: python manage.py runserver 0.0.0.0:$PORT
     autoDeploy: true
     envVars:
