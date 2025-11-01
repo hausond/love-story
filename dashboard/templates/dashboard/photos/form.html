@@ -1,0 +1,41 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{{ title }} — Панель любви{% endblock %}
+
+{% block content %}
+<section class="fade-up space-y-6 max-w-3xl">
+    <div>
+        <h2 class="text-4xl">{{ title }}</h2>
+        <p class="text-[#7A6F6F]">Поделитесь любимым кадром и укажите категорию.</p>
+    </div>
+    <form method="post" enctype="multipart/form-data" class="card p-8 space-y-6">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="space-y-2">
+            <label class="text-sm uppercase tracking-wide text-[#7A6F6F]" for="{{ form.title.id_for_label }}">Название</label>
+            {{ form.title }}
+            {{ form.title.errors }}
+        </div>
+        <div class="space-y-2">
+            <label class="text-sm uppercase tracking-wide text-[#7A6F6F]" for="{{ form.category.id_for_label }}">Категория</label>
+            {{ form.category }}
+            {{ form.category.errors }}
+        </div>
+        <div class="space-y-3">
+            <label class="text-sm uppercase tracking-wide text-[#7A6F6F]" for="{{ form.image.id_for_label }}">Фото</label>
+            {{ form.image }}
+            {{ form.image.errors }}
+            {% if object and object.image %}
+            <p class="text-sm text-[#7A6F6F]">Текущее фото:</p>
+            <img src="{{ object.image.url }}" alt="{{ object.title }}" class="max-h-48 rounded-3xl border-4 border-[#FFD1DC] shadow-romantic">
+            {% endif %}
+            <img data-crop-preview class="hidden max-h-96 rounded-3xl shadow-romantic border-4 border-[#FFD1DC]" alt="Предпросмотр">
+            <button type="button" class="js-crop-trigger btn-romantic inline-flex items-center gap-2 px-6 py-3">Обрезать и сохранить</button>
+        </div>
+        <div class="flex gap-4">
+            <button type="submit" class="btn-romantic">Сохранить</button>
+            <a href="{% url 'dashboard:photos' %}" class="px-6 py-3 rounded-full border border-[#FFD1DC] text-[#7A6F6F] hover:bg-[#FFD1DC]/60 transition">Отменить</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "memories/base.html" %}
+
+{% block title %}Цитаты{% endblock %}
+
+{% block content %}
+<section class="fade-up space-y-4 text-center">
+    <h1 class="text-5xl romantic-font">Наши цитаты</h1>
+    <p class="text-[#7A6F6F] max-w-2xl mx-auto">Слова, которые согревают сердце и возвращают нас в самые нежные моменты.</p>
+</section>
+
+<section class="fade-up mt-10 grid gap-6 md:grid-cols-2">
+    {% for quote in quotes %}
+    <article class="relative romantic-card p-8 bg-[#FFF0F5]/70 border border-[#FFD1DC]/50">
+        <span class="absolute top-4 right-6 text-3xl">💖</span>
+        <p class="text-xl text-[#3A2E2E] leading-relaxed italic">“{{ quote.text }}”</p>
+        <footer class="mt-6 text-right text-[#7A6F6F] font-semibold">— {{ quote.author }}</footer>
+    </article>
+    {% empty %}
+    <p class="text-center text-[#7A6F6F] col-span-full">Добавьте первую цитату, чтобы делиться тёплыми словами.</p>
+    {% endfor %}
+</section>
+{% endblock %}

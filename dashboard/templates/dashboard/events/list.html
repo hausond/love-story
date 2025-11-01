@@ -1,0 +1,42 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}События — Панель любви{% endblock %}
+
+{% block content %}
+<section class="fade-up space-y-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+            <h2 class="text-4xl">События</h2>
+            <p class="text-[#7A6F6F]">Добавляйте тёплые моменты и даты, чтобы не забыть ни одной улыбки.</p>
+        </div>
+        <a href="{% url 'dashboard:event-create' %}" class="btn-romantic inline-flex items-center gap-2">Добавить событие</a>
+    </div>
+    <form method="get" class="card p-4 flex flex-col md:flex-row gap-4 items-center">
+        <input type="text" name="q" value="{{ query }}" placeholder="Поиск по названию или описанию" class="w-full rounded-2xl border-0 bg-[#FFF8FA] px-4 py-3 shadow-inner shadow-[rgba(255,182,193,0.25)] focus:ring-2 focus:ring-[#FFB6C1]">
+        <button type="submit" class="btn-romantic px-6 py-3">Искать</button>
+    </form>
+    <div class="grid gap-6">
+        {% for event in events %}
+        <article class="card p-6 flex flex-col lg:flex-row gap-6">
+            {% if event.photo %}
+            <img src="{{ event.photo.url }}" alt="{{ event.title }}" class="w-full lg:w-56 h-40 object-cover rounded-romantic border-4 border-[#FFD1DC] shadow-romantic">
+            {% endif %}
+            <div class="flex-1 space-y-3">
+                <p class="text-sm uppercase tracking-wide text-[#7A6F6F]">{{ event.date|date:"d F Y" }}</p>
+                <h3 class="text-2xl">{{ event.title }}</h3>
+                <p class="text-[#3A2E2E] whitespace-pre-line">{{ event.description }}</p>
+                <div class="flex flex-wrap gap-3 pt-2">
+                    <a href="{% url 'dashboard:event-edit' event.pk %}" class="btn-romantic px-5 py-2 text-sm">Редактировать</a>
+                    <form method="post" action="{% url 'dashboard:event-delete' event.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="px-5 py-2 rounded-full text-sm bg-[#FFF0F5] text-[#7A6F6F] border border-[#FFD1DC] hover:bg-[#FFD1DC]/70 transition">Удалить</button>
+                    </form>
+                </div>
+            </div>
+        </article>
+        {% empty %}
+        <p class="text-center text-[#7A6F6F]">Добавьте первое событие, чтобы оживить ленту воспоминаний.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

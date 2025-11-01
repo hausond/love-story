@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Панель любви{% endblock %}</title>
+    <link rel="icon" href="{% static 'memories/img/heart.ico' %}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        romantic: "#FFF8FA",
+                        romanticAlt: "#FDF6F0",
+                        romanticAccent: "#FFB6C1",
+                        romanticAccent2: "#FFD1DC",
+                        romanticAccent3: "#FFF0F5",
+                        romanticText: "#3A2E2E",
+                        romanticMuted: "#7A6F6F",
+                    },
+                    fontFamily: {
+                        sans: ["Manrope", "sans-serif"],
+                        script: ["Dancing Script", "cursive"],
+                    },
+                    boxShadow: {
+                        romantic: "0 4px 12px rgba(255,182,193,0.25)",
+                    },
+                    borderRadius: {
+                        romantic: "24px",
+                    },
+                },
+            },
+        };
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(180deg, #FFF8FA 0%, #FDF6F0 100%);
+            color: #3A2E2E;
+            min-height: 100vh;
+        }
+        h1, h2, h3, .romantic-font {
+            font-family: 'Dancing Script', cursive;
+            color: #FF7F9F;
+        }
+        .fade-up { opacity: 0; transform: translateY(20px); transition: all 0.8s ease; }
+        .fade-up.show { opacity: 1; transform: translateY(0); }
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 24px;
+            box-shadow: 0 4px 10px rgba(255,182,193,0.25);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(255,182,193,0.35);
+        }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 16px;
+            color: #7A6F6F;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        .nav-link:hover,
+        .nav-link.active {
+            background: linear-gradient(135deg, #FFB6C1 0%, #FFD1DC 100%);
+            color: #3A2E2E;
+            box-shadow: 0 4px 12px rgba(255,182,193,0.3);
+        }
+        .btn-romantic {
+            background: linear-gradient(135deg, #FFB6C1 0%, #FFD1DC 100%);
+            color: #3A2E2E;
+            border-radius: 9999px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255,182,193,0.3);
+        }
+        .btn-romantic:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 14px rgba(255,182,193,0.8);
+        }
+        .message {
+            border-radius: 20px;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 182, 193, 0.25);
+            color: #3A2E2E;
+            box-shadow: 0 4px 12px rgba(255,182,193,0.25);
+        }
+        .floating-hearts {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            pointer-events: none;
+            z-index: 50;
+        }
+        .floating-hearts span {
+            position: absolute;
+            display: block;
+            color: rgba(255, 182, 193, 0.5);
+            animation: float 6s infinite ease-in-out;
+        }
+        .floating-hearts span:nth-child(2) { animation-delay: 2s; color: rgba(255, 209, 220, 0.6); left: 24px; }
+        .floating-hearts span:nth-child(3) { animation-delay: 4s; color: rgba(255, 240, 245, 0.7); left: 12px; }
+        @keyframes float {
+            0% { transform: translateY(0) scale(0.8); opacity: 0.6; }
+            50% { transform: translateY(-40px) scale(1.1); opacity: 1; }
+            100% { transform: translateY(0) scale(0.8); opacity: 0.6; }
+        }
+    </style>
+</head>
+<body class="relative">
+    <div class="flex min-h-screen">
+        <aside class="hidden lg:flex lg:w-72 flex-col gap-6 bg-[#FFF0F5]/80 backdrop-blur px-6 py-10 border-r border-[#FFD1DC]/60">
+            <div>
+                <p class="text-sm uppercase tracking-[0.4em] text-[#7A6F6F] mb-4">dashboard</p>
+                <h1 class="text-3xl romantic-font">🌷 Панель любви</h1>
+            </div>
+            <nav class="flex flex-col gap-2 text-sm">
+                {% with request.resolver_match.url_name as current %}
+                <a href="{% url 'dashboard:home' %}" class="nav-link {% if current == 'home' %}active{% endif %}">Главная</a>
+                <a href="{% url 'dashboard:events' %}" class="nav-link {% if current == 'events' or current == 'event-create' or current == 'event-edit' %}active{% endif %}">События</a>
+                <a href="{% url 'dashboard:photos' %}" class="nav-link {% if current == 'photos' or current == 'photo-create' or current == 'photo-edit' %}active{% endif %}">Галерея</a>
+                <a href="{% url 'dashboard:quotes' %}" class="nav-link {% if current == 'quotes' or current == 'quote-create' or current == 'quote-edit' %}active{% endif %}">Цитаты</a>
+                <a href="{% url 'dashboard:plans' %}" class="nav-link {% if current == 'plans' or current == 'plan-create' or current == 'plan-edit' %}active{% endif %}">Планы</a>
+                <a href="{% url 'dashboard:settings' %}" class="nav-link {% if current == 'settings' %}active{% endif %}">Настройки</a>
+                {% endwith %}
+                <form method="post" action="{% url 'dashboard:logout' %}" class="mt-6">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-link justify-center bg-white/60 hover:bg-white text-[#7A6F6F]">Выйти</button>
+                </form>
+            </nav>
+        </aside>
+        <div class="flex-1 flex flex-col">
+            <header class="lg:hidden bg-[#FFF0F5]/90 backdrop-blur shadow-romantic px-6 py-4 flex items-center justify-between">
+                <h1 class="text-2xl romantic-font">🌷 Панель любви</h1>
+                <button id="mobileNavToggle" class="btn-romantic text-sm px-4 py-2">Меню</button>
+            </header>
+            <nav id="mobileNav" class="hidden bg-[#FFF0F5]/95 backdrop-blur px-6 py-4 space-y-2 lg:hidden">
+                <a href="{% url 'dashboard:home' %}" class="nav-link">Главная</a>
+                <a href="{% url 'dashboard:events' %}" class="nav-link">События</a>
+                <a href="{% url 'dashboard:photos' %}" class="nav-link">Галерея</a>
+                <a href="{% url 'dashboard:quotes' %}" class="nav-link">Цитаты</a>
+                <a href="{% url 'dashboard:plans' %}" class="nav-link">Планы</a>
+                <a href="{% url 'dashboard:settings' %}" class="nav-link">Настройки</a>
+                <form method="post" action="{% url 'dashboard:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-link justify-center bg-white/60 hover:bg-white text-[#7A6F6F]">Выйти</button>
+                </form>
+            </nav>
+            <main class="flex-1 px-6 lg:px-12 py-10">
+                {% if messages %}
+                <div class="space-y-3 mb-6 fade-up">
+                    {% for message in messages %}
+                    <div class="message">{{ message }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% block content %}{% endblock %}
+                <small class="block text-center text-[#7A6F6F] mt-12">Сделано с любовью 💕 специально для нас</small>
+            </main>
+        </div>
+    </div>
+
+    <div class="floating-hearts">
+        <span>💖</span>
+        <span>💞</span>
+        <span>💗</span>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script src="{% static 'dashboard/js/dashboard.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

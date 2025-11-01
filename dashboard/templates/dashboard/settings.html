@@ -1,0 +1,46 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Настройки — Панель любви{% endblock %}
+
+{% block content %}
+<section class="fade-up space-y-6 max-w-3xl">
+    <div>
+        <h2 class="text-4xl">Настройки главной страницы</h2>
+        <p class="text-[#7A6F6F]">Обновите главный герой-блок и дату начала нашей истории.</p>
+    </div>
+    <form method="post" enctype="multipart/form-data" class="card p-8 space-y-6">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="space-y-2">
+            <label class="text-sm uppercase tracking-wide text-[#7A6F6F]" for="{{ form.hero_title.id_for_label }}">Заголовок</label>
+            {{ form.hero_title }}
+            {{ form.hero_title.errors }}
+        </div>
+        <div class="space-y-2">
+            <label class="text-sm uppercase tracking-wide text-[#7A6F6F]" for="{{ form.hero_subtitle.id_for_label }}">Подзаголовок</label>
+            {{ form.hero_subtitle }}
+            {{ form.hero_subtitle.errors }}
+        </div>
+        <div class="space-y-2">
+            <label class="text-sm uppercase tracking-wide text-[#7A6F6F]" for="{{ form.start_date.id_for_label }}">Дата начала</label>
+            {{ form.start_date }}
+            {{ form.start_date.errors }}
+        </div>
+        <div class="space-y-3">
+            <label class="text-sm uppercase tracking-wide text-[#7A6F6F]" for="{{ form.hero_image.id_for_label }}">Главное фото</label>
+            {{ form.hero_image }}
+            {{ form.hero_image.errors }}
+            {% if instance and instance.hero_image %}
+            <p class="text-sm text-[#7A6F6F]">Текущее фото:</p>
+            <img src="{{ instance.hero_image.url }}" alt="Hero" class="max-h-48 rounded-3xl border-4 border-[#FFD1DC] shadow-romantic">
+            {% endif %}
+            <img data-crop-preview class="hidden max-h-96 rounded-3xl shadow-romantic border-4 border-[#FFD1DC]" alt="Предпросмотр">
+            <button type="button" class="js-crop-trigger btn-romantic inline-flex items-center gap-2 px-6 py-3">Обрезать и сохранить</button>
+        </div>
+        <div class="flex gap-4">
+            <button type="submit" class="btn-romantic">Сохранить</button>
+            <a href="{% url 'dashboard:home' %}" class="px-6 py-3 rounded-full border border-[#FFD1DC] text-[#7A6F6F] hover:bg-[#FFD1DC]/60 transition">Назад</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

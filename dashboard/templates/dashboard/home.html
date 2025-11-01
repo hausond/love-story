@@ -1,0 +1,51 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Панель любви — Главная{% endblock %}
+
+{% block content %}
+<section class="fade-up space-y-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+            <h2 class="text-4xl">Добро пожаловать, {{ request.user.first_name|default:request.user.username }}!</h2>
+            <p class="text-[#7A6F6F] mt-2">Управляйте нашими воспоминаниями в романтичной атмосфере.</p>
+        </div>
+        <a href="{% url 'memories:index' %}" class="btn-romantic inline-flex items-center gap-2">Перейти на сайт</a>
+    </div>
+    <div class="grid md:grid-cols-3 xl:grid-cols-5 gap-6">
+        <div class="card p-6 text-center">
+            <p class="text-sm text-[#7A6F6F] uppercase tracking-wide">События</p>
+            <p class="text-3xl font-semibold">{{ events_count }}</p>
+        </div>
+        <div class="card p-6 text-center">
+            <p class="text-sm text-[#7A6F6F] uppercase tracking-wide">Фотографии</p>
+            <p class="text-3xl font-semibold">{{ photos_count }}</p>
+        </div>
+        <div class="card p-6 text-center">
+            <p class="text-sm text-[#7A6F6F] uppercase tracking-wide">Цитаты</p>
+            <p class="text-3xl font-semibold">{{ quotes_count }}</p>
+        </div>
+        <div class="card p-6 text-center">
+            <p class="text-sm text-[#7A6F6F] uppercase tracking-wide">Планы</p>
+            <p class="text-3xl font-semibold">{{ plans_count }}</p>
+        </div>
+        <div class="card p-6 text-center">
+            <p class="text-sm text-[#7A6F6F] uppercase tracking-wide">Исполнено</p>
+            <p class="text-3xl font-semibold">{{ plans_done }}</p>
+        </div>
+    </div>
+</section>
+
+{% if main_info %}
+<section class="fade-up mt-10 card p-8 relative overflow-hidden">
+    {% if main_info.hero_image %}
+    <img src="{{ main_info.hero_image.url }}" alt="" class="absolute right-6 top-6 w-40 h-40 object-cover rounded-romantic opacity-60">
+    {% endif %}
+    <div class="relative">
+        <h3 class="text-3xl romantic-font">Главная страница</h3>
+        <p class="text-[#7A6F6F] mt-3">Заголовок: <span class="font-semibold text-[#3A2E2E]">{{ main_info.hero_title }}</span></p>
+        <p class="text-[#7A6F6F] mt-1">Дата начала: <span class="font-semibold text-[#3A2E2E]">{{ main_info.start_date|date:"d.m.Y" }}</span></p>
+        <a href="{% url 'dashboard:settings' %}" class="btn-romantic inline-flex items-center gap-2 mt-6">Редактировать</a>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

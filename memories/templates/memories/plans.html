@@ -1,0 +1,75 @@
+{% extends "memories/base.html" %}
+
+{% block title %}Наши планы{% endblock %}
+
+{% block content %}
+<style>
+    .plan-done { background: rgba(255, 209, 220, 0.4) !important; }
+</style>
+<section class="fade-up space-y-4 text-center">
+    <h1 class="text-5xl romantic-font">Планы и мечты</h1>
+    <p class="text-[#7A6F6F] max-w-2xl mx-auto">Запланируй наши будущие приключения и отмечай выполненное с любовью.</p>
+</section>
+
+<section class="fade-up mt-10 space-y-4">
+    {% for plan in plans %}
+    <article class="flex items-center justify-between px-6 py-5 rounded-romantic border-2 border-[#FFD1DC] shadow-romantic transition bg-[#FFF8FA] {% if plan.done %}plan-done{% endif %}" data-plan-container>
+        <label for="plan-{{ plan.id }}" class="flex items-center gap-4 cursor-pointer flex-1">
+            <input id="plan-{{ plan.id }}" type="checkbox" data-plan-toggle data-plan-id="{{ plan.id }}" class="h-6 w-6 rounded-full border-[#FFB6C1] text-[#FF7F9F] focus:ring-0" {% if plan.done %}checked{% endif %}>
+            <span class="text-lg text-[#3A2E2E] {% if plan.done %}line-through text-[#7A6F6F]{% endif %}" data-plan-label>{{ plan.title }}</span>
+        </label>
+        <span class="text-sm uppercase tracking-wide px-4 py-2 rounded-full {% if plan.done %}bg-[#FFB6C1] text-white{% else %}bg-[#FFF0F5] text-[#7A6F6F]{% endif %}" data-plan-status>
+            {% if plan.done %}готово{% else %}в процессе{% endif %}
+        </span>
+    </article>
+    {% empty %}
+    <p class="text-center text-[#7A6F6F]">Добавьте первый пункт и превращайте мечты в реальность.</p>
+    {% endfor %}
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll("[data-plan-toggle]").forEach((checkbox) => {
+            checkbox.addEventListener("change", async (event) => {
+                const target = event.currentTarget;
+                const planId = target.dataset.planId;
+                const url = `/api/plan/${planId}/toggle/`;
+                const parent = target.closest("[data-plan-container]");
+                const label = parent?.querySelector("[data-plan-label]");
+                const status = parent?.querySelector("[data-plan-status]");
+
+                try {
+                    const response = await fetch(url, {
+                        method: "PUT",
+                        headers: {"X-Requested-With": "XMLHttpRequest"},
+                    });
+                    if (!response.ok) {
+                        throw new Error("Не удалось обновить план");
+                    }
+                    const data = await response.json();
+                    const done = Boolean(data.done);
+                    if (label) {
+                        label.classList.toggle("line-through", done);
+                        label.classList.toggle("text-[#7A6F6F]", done);
+                        label.classList.toggle("text-[#3A2E2E]", !done);
+                    }
+                    if (status) {
+                        status.textContent = done ? "готово" : "в процессе";
+                        status.className = done
+                            ? "text-sm uppercase tracking-wide px-4 py-2 rounded-full bg-[#FFB6C1] text-white"
+                            : "text-sm uppercase tracking-wide px-4 py-2 rounded-full bg-[#FFF0F5] text-[#7A6F6F]";
+                    }
+                    if (parent) {
+                        parent.classList.toggle("plan-done", done);
+                    }
+                } catch (error) {
+                    target.checked = !target.checked;
+                    alert(error.message);
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

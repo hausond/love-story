@@ -1,0 +1,179 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>{% block title %}Love Story{% endblock %}</title>
+    <link rel="icon" href="{% static 'memories/img/heart.ico' %}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        romantic: "#FFF8FA",
+                        romanticAlt: "#FDF6F0",
+                        romanticAccent: "#FFB6C1",
+                        romanticAccent2: "#FFD1DC",
+                        romanticAccent3: "#FFF0F5",
+                        romanticText: "#3A2E2E",
+                        romanticMuted: "#7A6F6F",
+                    },
+                    fontFamily: {
+                        sans: ["Manrope", "sans-serif"],
+                        script: ["Dancing Script", "cursive"],
+                    },
+                    borderRadius: {
+                        romantic: "24px",
+                    },
+                    boxShadow: {
+                        romantic: "0 4px 12px rgba(255,182,193,0.25)",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(180deg, #FFF8FA 0%, #FDF6F0 100%);
+            color: #3A2E2E;
+            min-height: 100vh;
+        }
+        h1, h2, h3, .romantic-font {
+            font-family: 'Dancing Script', cursive;
+            color: #FF7F9F;
+        }
+        .fade-up { opacity: 0; transform: translateY(20px); transition: all 0.8s ease; }
+        .fade-up.show { opacity: 1; transform: translateY(0); }
+        .page-transition { opacity: 0; transition: opacity 0.5s ease; }
+        .page-transition.ready { opacity: 1; }
+        .romantic-card {
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 24px;
+            box-shadow: 0 4px 10px rgba(255,182,193,0.25);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .romantic-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(255,182,193,0.35);
+        }
+        .romantic-btn {
+            background: linear-gradient(135deg, #FFB6C1 0%, #FFD1DC 100%);
+            color: #3A2E2E;
+            border-radius: 9999px;
+            padding: 0.85rem 1.75rem;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(255,182,193,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .romantic-btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 14px rgba(255,182,193,0.8);
+        }
+        .nav-link {
+            padding: 0.6rem 1rem;
+            border-radius: 9999px;
+            transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+            color: #7A6F6F;
+            font-weight: 500;
+        }
+        .nav-link:hover,
+        .nav-link.active {
+            background: linear-gradient(135deg, #FFB6C1 0%, #FFD1DC 100%);
+            color: #3A2E2E;
+            box-shadow: 0 4px 12px rgba(255,182,193,0.3);
+            transform: translateY(-2px);
+        }
+        .floating-hearts {
+            position: fixed;
+            left: 30px;
+            bottom: 30px;
+            pointer-events: none;
+            z-index: 40;
+        }
+        .floating-hearts span {
+            display: block;
+            animation: float 6s infinite ease-in-out;
+            color: rgba(255,182,193,0.6);
+            font-size: 1.5rem;
+            position: absolute;
+        }
+        .floating-hearts span:nth-child(2) { animation-delay: 2s; left: 40px; color: rgba(255,209,220,0.7); }
+        .floating-hearts span:nth-child(3) { animation-delay: 4s; left: 20px; color: rgba(255,240,245,0.7); }
+        @keyframes float {
+            0% { transform: translateY(0) scale(0.8); opacity: 0.6; }
+            50% { transform: translateY(-40px) scale(1.1); opacity: 1; }
+            100% { transform: translateY(0) scale(0.8); opacity: 0.6; }
+        }
+    </style>
+</head>
+<body class="page-transition">
+    <div class="min-h-screen flex flex-col">
+        <header class="sticky top-0 z-30 bg-[#FFF0F5]/80 backdrop-blur border-b border-[#FFD1DC]/60 shadow-romantic">
+            <div class="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between">
+                <a href="{% url 'memories:index' %}" class="flex items-center gap-3">
+                    <span class="text-3xl romantic-font">Love Story</span>
+                </a>
+                <nav class="hidden md:flex items-center gap-3">
+                    {% with request.resolver_match.url_name as current %}
+                    <a href="{% url 'memories:index' %}" class="nav-link {% if current == 'index' %}active{% endif %}">Главная</a>
+                    <a href="{% url 'memories:timeline' %}" class="nav-link {% if current == 'timeline' %}active{% endif %}">События</a>
+                    <a href="{% url 'memories:gallery' %}" class="nav-link {% if current == 'gallery' %}active{% endif %}">Галерея</a>
+                    <a href="{% url 'memories:quotes' %}" class="nav-link {% if current == 'quotes' %}active{% endif %}">Цитаты</a>
+                    <a href="{% url 'memories:plans' %}" class="nav-link {% if current == 'plans' %}active{% endif %}">Планы</a>
+                    {% endwith %}
+                </nav>
+                <button id="mobile-menu-toggle" class="md:hidden romantic-btn px-5 py-2 text-sm">Меню</button>
+            </div>
+            <nav id="mobile-menu" class="md:hidden hidden flex flex-col gap-3 px-5 pb-5">
+                <a href="{% url 'memories:index' %}" class="nav-link">Главная</a>
+                <a href="{% url 'memories:timeline' %}" class="nav-link">События</a>
+                <a href="{% url 'memories:gallery' %}" class="nav-link">Галерея</a>
+                <a href="{% url 'memories:quotes' %}" class="nav-link">Цитаты</a>
+                <a href="{% url 'memories:plans' %}" class="nav-link">Планы</a>
+            </nav>
+        </header>
+
+        <main class="flex-1 max-w-6xl mx-auto px-5 py-12 space-y-14">
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="bg-[#FFF0F5]/80 backdrop-blur py-8 border-t border-[#FFD1DC]/60">
+            <div class="max-w-6xl mx-auto px-5 text-center text-[#7A6F6F]">
+                Сделано с любовью ❤️
+            </div>
+        </footer>
+    </div>
+
+    <div class="floating-hearts">
+        <span>💖</span>
+        <span>💞</span>
+        <span>💗</span>
+    </div>
+
+    <script>
+        document.documentElement.classList.add("scroll-smooth");
+        const els = document.querySelectorAll(".fade-up");
+        if ("IntersectionObserver" in window) {
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("show");
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            els.forEach((el) => obs.observe(el));
+        } else {
+            els.forEach((el) => el.classList.add("show"));
+        }
+    </script>
+    <script src="{% static 'memories/js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

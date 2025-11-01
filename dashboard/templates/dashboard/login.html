@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в панель любви</title>
+    <link rel="icon" href="{% static 'memories/img/heart.ico' %}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: radial-gradient(circle at top, #FFF0F5 0%, #FFF8FA 40%, #FDF6F0 100%);
+            min-height: 100vh;
+            color: #3A2E2E;
+        }
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            color: #FF7F9F;
+        }
+        .card {
+            background: rgba(255,255,255,0.9);
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(255,182,193,0.3);
+        }
+        .btn-romantic {
+            background: linear-gradient(135deg, #FFB6C1 0%, #FFD1DC 100%);
+            border-radius: 9999px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            color: #3A2E2E;
+            box-shadow: 0 4px 12px rgba(255,182,193,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .btn-romantic:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 14px rgba(255,182,193,0.8);
+        }
+        .field-label {
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 0.75rem;
+            color: #7A6F6F;
+        }
+        .errorlist {
+            margin-top: 0.5rem;
+            color: #C53030;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center py-16 px-6">
+    <div class="max-w-md w-full card p-10 text-center space-y-6">
+        <h1 class="text-4xl">🌷 Панель любви</h1>
+        <p class="text-[#7A6F6F]">Войдите, чтобы окружить воспоминания нежностью.</p>
+        <form method="post" class="space-y-5 text-left">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+            <div class="bg-[#FFD1DC]/70 text-[#3A2E2E] rounded-2xl px-4 py-3">
+                {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+            </div>
+            {% endif %}
+            <div class="space-y-2">
+                <label for="{{ form.username.id_for_label }}" class="field-label">{{ form.username.label }}</label>
+                {{ form.username }}
+                {{ form.username.errors }}
+            </div>
+            <div class="space-y-2">
+                <label for="{{ form.password.id_for_label }}" class="field-label">{{ form.password.label }}</label>
+                {{ form.password }}
+                {{ form.password.errors }}
+            </div>
+            <button type="submit" class="w-full btn-romantic">Войти</button>
+        </form>
+        <small class="block text-[#7A6F6F]">Сделано с любовью 💕 специально для нас</small>
+    </div>
+</body>
+</html>

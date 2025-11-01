@@ -1,0 +1,33 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Цитаты — Панель любви{% endblock %}
+
+{% block content %}
+<section class="fade-up space-y-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+            <h2 class="text-4xl">Цитаты</h2>
+            <p class="text-[#7A6F6F]">Соберите любимые фразы, переписки и маленькие откровения.</p>
+        </div>
+        <a href="{% url 'dashboard:quote-create' %}" class="btn-romantic inline-flex items-center gap-2">Добавить цитату</a>
+    </div>
+    <div class="grid lg:grid-cols-2 gap-6">
+        {% for quote in quotes %}
+        <article class="card p-6 relative">
+            <span class="absolute top-4 right-6 text-3xl">💝</span>
+            <p class="text-lg text-[#3A2E2E] leading-relaxed">“{{ quote.text }}”</p>
+            <footer class="mt-4 text-right text-[#7A6F6F] font-semibold">— {{ quote.author }}</footer>
+            <div class="flex flex-wrap gap-3 pt-4">
+                <a href="{% url 'dashboard:quote-edit' quote.pk %}" class="btn-romantic px-5 py-2 text-sm">Редактировать</a>
+                <form method="post" action="{% url 'dashboard:quote-delete' quote.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="px-5 py-2 rounded-full text-sm bg-[#FFF0F5] text-[#7A6F6F] border border-[#FFD1DC] hover:bg-[#FFD1DC]/70 transition">Удалить</button>
+                </form>
+            </div>
+        </article>
+        {% empty %}
+        <p class="text-center text-[#7A6F6F] col-span-full">Добавьте первую цитату для нашего архива тёплых слов.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

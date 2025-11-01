@@ -1,0 +1,39 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Планы — Панель любви{% endblock %}
+
+{% block content %}
+<section class="fade-up space-y-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+            <h2 class="text-4xl">Планы и мечты</h2>
+            <p class="text-[#7A6F6F]">Запланируйте совместные приключения и отмечайте выполненные.</p>
+        </div>
+        <a href="{% url 'dashboard:plan-create' %}" class="btn-romantic inline-flex items-center gap-2">Добавить план</a>
+    </div>
+    <div class="grid gap-4">
+        {% for plan in plans %}
+        <article class="card p-6 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <span class="text-2xl">{{ forloop.counter }}.</span>
+                <div>
+                    <p class="text-lg {% if plan.done %}line-through text-[#7A6F6F]{% endif %}">{{ plan.title }}</p>
+                    <span class="inline-block mt-2 px-3 py-1 rounded-full text-sm {% if plan.done %}bg-[#FFD1DC] text-[#3A2E2E]{% else %}bg-[#FFF0F5] text-[#7A6F6F]{% endif %}">
+                        {% if plan.done %}исполнено{% else %}в процессе{% endif %}
+                    </span>
+                </div>
+            </div>
+            <div class="flex flex-wrap gap-3">
+                <a href="{% url 'dashboard:plan-edit' plan.pk %}" class="btn-romantic px-5 py-2 text-sm">Редактировать</a>
+                <form method="post" action="{% url 'dashboard:plan-delete' plan.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="px-5 py-2 rounded-full text-sm bg-[#FFF0F5] text-[#7A6F6F] border border-[#FFD1DC] hover:bg-[#FFD1DC]/70 transition">Удалить</button>
+                </form>
+            </div>
+        </article>
+        {% empty %}
+        <p class="text-center text-[#7A6F6F]">Составьте первый список дел и мечт!</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

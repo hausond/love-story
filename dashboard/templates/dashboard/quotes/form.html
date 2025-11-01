@@ -1,0 +1,30 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{{ title }} — Панель любви{% endblock %}
+
+{% block content %}
+<section class="fade-up space-y-6 max-w-3xl">
+    <div>
+        <h2 class="text-4xl">{{ title }}</h2>
+        <p class="text-[#7A6F6F]">Оставьте нежные слова, чтобы перечитывать их вновь.</p>
+    </div>
+    <form method="post" class="card p-8 space-y-6">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="space-y-2">
+            <label class="text-sm uppercase tracking-wide text-[#7A6F6F]" for="{{ form.text.id_for_label }}">Текст</label>
+            {{ form.text }}
+            {{ form.text.errors }}
+        </div>
+        <div class="space-y-2">
+            <label class="text-sm uppercase tracking-wide text-[#7A6F6F]" for="{{ form.author.id_for_label }}">Автор</label>
+            {{ form.author }}
+            {{ form.author.errors }}
+        </div>
+        <div class="flex gap-4">
+            <button type="submit" class="btn-romantic">Сохранить</button>
+            <a href="{% url 'dashboard:quotes' %}" class="px-6 py-3 rounded-full border border-[#FFD1DC] text-[#7A6F6F] hover:bg-[#FFD1DC]/60 transition">Отменить</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

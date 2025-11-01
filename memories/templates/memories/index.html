@@ -1,0 +1,117 @@
+{% extends "memories/base.html" %}
+
+{% block title %}Наша история любви{% endblock %}
+
+{% block content %}
+<section class="relative h-[70vh] md:h-[80vh] flex flex-col justify-center items-center text-center fade-up overflow-hidden rounded-romantic">
+    {% if main %}
+        {% if main.hero_image %}
+        <img src="{{ main.hero_image.url }}" alt="Мы" class="absolute inset-0 object-cover w-full h-full opacity-70">
+        {% else %}
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,#FFF0F5,rgba(255,182,193,0.25))]"></div>
+        {% endif %}
+    {% else %}
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,#FFF0F5,rgba(255,182,193,0.25))]"></div>
+    {% endif %}
+    <div class="relative z-10 max-w-2xl p-10 bg-[rgba(255,248,250,0.85)] rounded-romantic shadow-romantic border border-[#FFD1DC]/60">
+        <h1 class="text-5xl md:text-6xl romantic-font mb-4">{{ main.hero_title|default:"Каждый день — наше маленькое чудо" }}</h1>
+        <p class="text-lg md:text-xl text-[#7A6F6F]">{{ main.hero_subtitle|default:"Пусть эта страница хранит наши улыбки, поездки и мечты." }}</p>
+        {% if main and main.start_date %}
+        <p class="mt-6 text-2xl text-[#3A2E2E]">Вместе уже <span id="daysTogether" data-start-date="{{ main.start_date|date:'Y-m-d' }}">0</span> дней 💕</p>
+        {% endif %}
+        <div class="mt-6 flex flex-wrap justify-center gap-4">
+            <a href="#timeline-preview" class="romantic-btn inline-flex items-center gap-2">Наши моменты</a>
+            <a href="{% url 'memories:gallery' %}" class="px-6 py-3 rounded-full border border-[#FFD1DC] bg-[#FFF0F5]/70 text-[#7A6F6F] hover:bg-[#FFD1DC]/70 transition">Открыть галерею</a>
+        </div>
+    </div>
+</section>
+
+<section id="timeline-preview" class="fade-up space-y-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+            <h2 class="text-4xl romantic-font">Наши события</h2>
+            <p class="text-[#7A6F6F]">Самые важные даты и истории, которыми хочется делиться.</p>
+        </div>
+        <a href="{% url 'memories:timeline' %}" class="romantic-btn">Вся лента</a>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+        {% for event in events %}
+        <article class="romantic-card overflow-hidden">
+            {% if event.photo %}
+            <img src="{{ event.photo.url }}" alt="{{ event.title }}" class="w-full h-48 object-cover border-b-4 border-[#FFD1DC]">
+            {% endif %}
+            <div class="p-6 space-y-3">
+                <p class="text-sm uppercase tracking-wide text-[#7A6F6F]">{{ event.date|date:"d F Y" }}</p>
+                <h3 class="text-2xl text-[#3A2E2E]">{{ event.title }}</h3>
+                <p class="text-[#7A6F6F] overflow-hidden">{{ event.description }}</p>
+            </div>
+        </article>
+        {% empty %}
+        <p class="text-[#7A6F6F] col-span-full text-center">Добавьте первое событие, чтобы начать нашу ленту.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="fade-up space-y-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+            <h2 class="text-4xl romantic-font">Фотогалерея</h2>
+            <p class="text-[#7A6F6F]">Кадры, в которые хочется возвращаться.</p>
+        </div>
+        <a href="{% url 'memories:gallery' %}" class="romantic-btn">Смотреть все</a>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-5">
+        {% for photo in photos %}
+        <div class="romantic-card overflow-hidden group cursor-pointer">
+            <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="w-full h-48 object-cover border-b-4 border-[#FFD1DC] transition-transform duration-300 group-hover:scale-105">
+            <div class="p-4 text-center">
+                <p class="text-[#3A2E2E]">{{ photo.title }}</p>
+                {% if photo.category %}
+                <span class="mt-2 inline-flex px-3 py-1 rounded-full bg-[#FFF0F5] text-[#7A6F6F] text-xs uppercase tracking-wide">{{ photo.category }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-[#7A6F6F] col-span-full text-center">Галерея ждёт первых фотографий.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="fade-up romantic-card p-8 md:p-12 flex flex-col md:flex-row items-center gap-8">
+    <div class="flex-1 space-y-3">
+        <h2 class="text-4xl romantic-font">Наши любимые слова</h2>
+        <p class="text-[#7A6F6F]">Цитаты, переписки и маленькие признания, которые хочется перечитывать.</p>
+        <a href="{% url 'memories:quotes' %}" class="romantic-btn inline-flex items-center gap-2">Читать цитаты</a>
+    </div>
+    <div class="flex-1">
+        <div class="bg-[#FFF0F5] rounded-romantic p-6 shadow-romantic border border-[#FFD1DC]/80 text-[#7A6F6F] italic">
+            «Любовь — это когда тебя понимают даже без слов.»
+        </div>
+    </div>
+</section>
+
+<section class="fade-up romantic-card p-8 bg-[#FFF0F5]/70">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div>
+            <h2 class="text-4xl romantic-font">Наши мечты</h2>
+            <p class="text-[#7A6F6F]">Список идей и планов, которые мы обязательно воплотим.</p>
+        </div>
+        <a href="{% url 'memories:plans' %}" class="romantic-btn">Смотреть планы</a>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const counter = document.getElementById("daysTogether");
+        if (!counter) return;
+        const start = counter.dataset.startDate;
+        if (!start) return;
+        const startDate = new Date(start + "T00:00:00");
+        const now = new Date();
+        const diff = Math.max(0, Math.floor((now - startDate) / (1000 * 60 * 60 * 24)));
+        counter.textContent = diff;
+    });
+</script>
+{% endblock %}
